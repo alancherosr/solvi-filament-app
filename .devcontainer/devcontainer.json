@@ -22,7 +22,9 @@
         "mikestead.dotenv",
         "ryannaddy.laravel-artisan",
         "onecentlin.laravel-blade",
-        "amiralizadeh9480.laravel-extra-intellisense"
+        "amiralizadeh9480.laravel-extra-intellisense",
+        "vscodevim.vim",
+        "github.copilot"
       ],
       "settings": {
         "php.suggest.basic": false,

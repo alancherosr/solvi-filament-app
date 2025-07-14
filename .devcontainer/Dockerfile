@@ -1,5 +1,8 @@
 # Use the official PHP image with Apache
-FROM php:8.3-apache
+FROM php:8.4-apache
+
+# Upgrade all packages to their latest versions to reduce vulnerabilities
+RUN apt-get update && apt-get upgrade -y
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
@@ -18,6 +21,7 @@ RUN apt-get update && apt-get install -y \
     jpegoptim optipng pngquant gifsicle \
     vim \
     postgresql-client \
+    libpq-dev \
     supervisor \
     sudo
 
