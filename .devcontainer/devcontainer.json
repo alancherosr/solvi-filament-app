@@ -1,0 +1,54 @@
+{
+  "name": "Personal Finances Laravel + Filament",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "app",
+  "workspaceFolder": "/workspace",
+  "shutdownAction": "stopCompose",
+  
+  "features": {
+    "ghcr.io/devcontainers/features/git:1": {},
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  },
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "bmewburn.vscode-intelephense-client",
+        "bradlc.vscode-tailwindcss",
+        "ms-vscode.vscode-json",
+        "esbenp.prettier-vscode",
+        "formulahendry.auto-rename-tag",
+        "christian-kohler.path-intellisense",
+        "mikestead.dotenv",
+        "ryannaddy.laravel-artisan",
+        "onecentlin.laravel-blade",
+        "amiralizadeh9480.laravel-extra-intellisense"
+      ],
+      "settings": {
+        "php.suggest.basic": false,
+        "php.validate.enable": false,
+        "intelephense.files.exclude": [
+          "**/node_modules/**",
+          "**/vendor/**"
+        ],
+        "editor.formatOnSave": true
+      }
+    }
+  },
+
+  "forwardPorts": [8000, 5432],
+  "portsAttributes": {
+    "8000": {
+      "label": "Laravel App",
+      "onAutoForward": "notify"
+    },
+    "5432": {
+      "label": "PostgreSQL"
+    }
+  },
+
+  "postCreateCommand": "bash .devcontainer/setup.sh",
+  "postStartCommand": "sudo service apache2 start",
+
+  "remoteUser": "vscode"
+}
