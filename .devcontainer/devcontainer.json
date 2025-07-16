@@ -24,7 +24,9 @@
         "onecentlin.laravel-blade",
         "amiralizadeh9480.laravel-extra-intellisense",
         "vscodevim.vim",
-        "github.copilot"
+        "github.copilot",
+        "ms-ossdata.vscode-pgsql",
+        "ms-azuretools.vscode-containers"
       ],
       "settings": {
         "php.suggest.basic": false,
@@ -33,7 +35,17 @@
           "**/node_modules/**",
           "**/vendor/**"
         ],
-        "editor.formatOnSave": true
+        "editor.formatOnSave": true,
+        "pgsql.connections": [
+          {
+            "label": "Local PostgreSQL",
+            "host": "postgres",
+            "port": "5432",
+            "database": "personal_finances",
+            "user": "postgres",
+            "password": "password"
+          }
+        ]
       }
     }
   },

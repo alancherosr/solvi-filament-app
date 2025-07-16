@@ -29,7 +29,7 @@ RUN apt-get update && apt-get install -y \
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install PHP extensions
-RUN docker-php-ext-install pdo_pgsql mbstring exif pcntl bcmath gd zip
+RUN docker-php-ext-install pdo_pgsql mbstring exif pcntl bcmath gd zip intl
 
 # Install Node.js 18.x
 RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
@@ -53,15 +53,15 @@ RUN a2enmod rewrite
 RUN echo '<VirtualHost *:80>\n\
     DocumentRoot /workspace/public\n\
     <Directory /workspace/public>\n\
-        AllowOverride All\n\
-        Require all granted\n\
+    AllowOverride All\n\
+    Require all granted\n\
     </Directory>\n\
     ErrorLog ${APACHE_LOG_DIR}/error.log\n\
     CustomLog ${APACHE_LOG_DIR}/access.log combined\n\
-</VirtualHost>' > /etc/apache2/sites-available/000-default.conf
+    </VirtualHost>' > /etc/apache2/sites-available/000-default.conf
 
-# Give vscode user sudo access for Apache management
-RUN echo "vscode ALL=(ALL) NOPASSWD: /usr/sbin/service apache2 start, /usr/sbin/service apache2 stop, /usr/sbin/service apache2 restart" >> /etc/sudoers
+# Give vscode user sudo access for Apache management and permission fixes
+RUN echo "vscode ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
 # Set working directory and initial permissions
 WORKDIR /workspace

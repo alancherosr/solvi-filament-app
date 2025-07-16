@@ -8,6 +8,11 @@ NC='\033[0m' # No Color
 
 echo -e "${GREEN}🚀 Setting up Personal Finances Laravel + Filament development environment...${NC}"
 
+# Fix initial permissions
+echo -e "${YELLOW}🔐 Fixing initial permissions...${NC}"
+sudo chown -R vscode:vscode /workspace
+sudo chmod -R 755 /workspace
+
 # Wait for PostgreSQL to be ready
 echo -e "${YELLOW}⏳ Waiting for PostgreSQL to be ready...${NC}"
 while ! pg_isready -h postgres -p 5432 -U postgres; do
@@ -16,9 +21,14 @@ done
 echo -e "${GREEN}✅ PostgreSQL is ready!${NC}"
 
 # Install PHP dependencies
-if [ ! -d "vendor" ]; then
+if [ ! -d "vendor" ] || [ ! -f "vendor/autoload.php" ]; then
     echo -e "${YELLOW}📦 Installing PHP dependencies...${NC}"
+    # Ensure composer cache directory has correct permissions
+    sudo chown -R vscode:vscode ~/.composer 2>/dev/null || true
     composer install --no-interaction --prefer-dist --optimize-autoloader
+    # Fix vendor directory permissions after install
+    sudo chown -R vscode:vscode vendor
+    chmod -R 755 vendor
 else
     echo -e "${GREEN}✅ PHP dependencies already installed${NC}"
 fi
@@ -60,8 +70,16 @@ php artisan migrate --seed --no-interaction
 
 # Set proper permissions
 echo -e "${YELLOW}🔐 Setting proper permissions...${NC}"
+# Set ownership for vscode user on all project files
+sudo chown -R vscode:vscode /workspace
+# Set proper permissions for Laravel directories
 chmod -R 775 storage bootstrap/cache
 chown -R vscode:www-data storage bootstrap/cache public
+# Ensure vendor directory has correct permissions
+if [ -d "vendor" ]; then
+    chmod -R 755 vendor
+    chown -R vscode:vscode vendor
+fi
 
 # Clear and cache config
 echo -e "${YELLOW}🧹 Clearing and caching configuration...${NC}"

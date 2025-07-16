@@ -1,188 +1,61 @@
-Below is a complete **README.md** you can drop into the root of your Laravel + Filament ## Importing Your Spreadsheet
+<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
-The importer expects the exact column headers found in the sample file.
-If you added custom columns, rename or drop them **before** uploading the file.
+<p align="center">
+<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
+<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
+<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
+<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+</p>
 
-Navigate to `/admin` and use the import action available on any resource page. The Filament import interface provides:
+## About Laravel
 
-- **Drag-and-drop file upload** – supports Excel (.xlsx) files
-- **Column mapping interface** – map your columns to the expected fields
-- **Validation preview** – see any errors before committing the import
-- **Progress tracking** – real-time import status
+Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
 
-* Accounts and Categories are **up-serted** by name.
-* Transactions are inserted idempotently using the `Id` column (UUIDs also work).
-* It's your data; the import will abort rather than overwrite balances it can't reconcile.reflects the structure of **presupuesto\_familiar.xlsx**—accounts, categories, transactions, budgets, and retirement projections—and documents both the UI and the REST API without over-selling anything.
+- [Simple, fast routing engine](https://laravel.com/docs/routing).
+- [Powerful dependency injection container](https://laravel.com/docs/container).
+- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
+- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
+- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
+- [Robust background job processing](https://laravel.com/docs/queues).
+- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
 
-````markdown
-# Personal Finances – Laravel + Filament
+Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
-Stream–lined bookkeeping for households that prefer self-hosting and full data ownership.
-The app mirrors the structure of `presupuesto_familiar.xlsx` (included in `/database/import-samples`)
-and exposes the same data through an **admin UI (Filament v3)** and a **token-protected REST API**.
+## Learning Laravel
 
----
+Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
 
-## Table of Contents
-1. [Features](#features)
-2. [Tech Stack](#tech-stack)
-3. [Quick Start](#quick-start)
-4. [Data Model](#data-model)
-5. [Importing Your Spreadsheet](#importing-your-spreadsheet)
-6. [REST API](#rest-api)
-7. [Running Tests](#running-tests)
-8. [Roadmap](#roadmap)
-9. [License](#license)
+You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
 
----
+If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
 
-## Features
-- **Accounts** – current balance, debits, credits (mirrors sheet `accounts`).
-- **Categories & Budgets** – monthly limits, spend, % used (`categories`).
-- **Transactions** – one table, dual columns `debit` / `credit` just like the XLSX.
-- **Retirement Projections** – simple yearly compound view (`retirement`).
-- **Dashboards** – Filament widgets: net worth, over-budget categories, month-to-date cash-flow.
-- **Excel Importer** – native Filament import action with drag-and-drop interface for easy workbook uploads.
-- **JSON REST API** – documented below; guarded by Laravel Sanctum.
-- **CI** – basic Pest tests for endpoints, importer, and policies.
+## Laravel Sponsors
 
----
+We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
 
-## Tech Stack
-| Layer            | Choice                              | Why not something else? |
-|------------------|-------------------------------------|-------------------------|
-| Framework        | Laravel 11                          | First-class Sanctum & job queues |
-| Admin UI         | Filament v3                         | Ships opinionated widgets, RBAC |
-| Excel import     | Filament native import actions      | Built-in drag-and-drop, validation |
-| Auth API         | Laravel Sanctum                     | Simpler than Passport, fine for first-party SPA |
-| DB               | MySQL/PostgreSQL (pick one)         | Both tested in CI |
-| Tests            | Pest + Laravel-test-factory-helpers | Concise syntax, readable failures |
+### Premium Partners
 
----
+- **[Vehikl](https://vehikl.com)**
+- **[Tighten Co.](https://tighten.co)**
+- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
+- **[64 Robots](https://64robots.com)**
+- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
+- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
+- **[Redberry](https://redberry.international/laravel-development)**
+- **[Active Logic](https://activelogic.com)**
 
-## Quick Start
+## Contributing
 
-```bash
-git clone <repo> personal-finances
-cd personal-finances
+Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
 
-# PHP, Composer & Node are assumed pre-installed
-composer install
-npm install && npm run build            # for Filament assets
+## Code of Conduct
 
-cp .env.example .env
-php artisan key:generate
+In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
 
-# adjust DB credentials then:
-php artisan migrate --seed              # seeds with empty accounts/categories
+## Security Vulnerabilities
 
-# optional: import the sample workbook via Filament admin UI
-# Navigate to /admin and use the import action on any resource page
-
-php artisan serve                        # http://127.0.0.1:8000
-````
-
-Log in at `/admin` with the admin credentials printed by the seeder.
-
----
-
-## Data Model
-
-| Table          | Key Columns                                                       | Source sheet |
-| -------------- | ----------------------------------------------------------------- | ------------ |
-| `accounts`     | `name`, `start_balance`, `balance`                                | accounts     |
-| `categories`   | `name`, `budget`, `spent`, `budget_left`                          | categories   |
-| `transactions` | `date`, `concept`, `account_id`, `category_id`, `debit`, `credit` | transactions |
-| `retirements`  | `year`, `amount`, `interest`, `rent_interest`                     | retirement   |
-
-*Yes, the workbook has a `budget` sheet. It’s more of a pivot; we recompute that view on the fly.*
-
----
-
-## Importing Your Spreadsheet
-
-The importer expects the exact column headers found in the sample file.
-If you added custom columns, rename or drop them **before** running the command.
-
-```bash
-php artisan finances:import storage/app/my_budget.xlsx
-```
-
-* Accounts and Categories are **up-serted** by name.
-* Transactions are inserted idempotently using the `Id` column (UUIDs also work).
-* It’s your data; the command will abort rather than overwrite balances it can’t reconcile.
-
----
-
-## REST API
-
-> All endpoints require a bearer token from `/api/auth/token` (email + password).
-> Send `Accept: application/json`; rate-limit is 60 req/min by default.
-
-### Accounts
-
-| Verb   | URI                  | Action                                 |
-| ------ | -------------------- | -------------------------------------- |
-| GET    | `/api/accounts`      | List all accounts with current balance |
-| GET    | `/api/accounts/{id}` | Single account                         |
-| POST   | `/api/accounts`      | Create (`name`, `start_balance`)       |
-| PUT    | `/api/accounts/{id}` | Update                                 |
-| DELETE | `/api/accounts/{id}` | Soft-delete                            |
-
-### Categories & Budgets
-
-| Verb  | URI                           | Notes                                      |
-| ----- | ----------------------------- | ------------------------------------------ |
-| GET   | `/api/categories`             | Budget, spent, budget\_left, percent\_used |
-| PATCH | `/api/categories/{id}/budget` | Update monthly limit                       |
-| GET   | `/api/categories/over-budget` | Convenience endpoint                       |
-
-### Transactions
-
-| Verb   | URI                      | Filters                                                 |
-| ------ | ------------------------ | ------------------------------------------------------- |
-| GET    | `/api/transactions`      | `?from=2025-01-01&to=2025-01-31&category=Groceries`     |
-| POST   | `/api/transactions`      | `date, concept, account_id, category_id, debit, credit` |
-| PUT    | `/api/transactions/{id}` | Immutability is overrated; still allowed                |
-| DELETE | `/api/transactions/{id}` | Soft-delete                                             |
-
-### Retirement
-
-\| GET | `/api/retirement` | Current projection |
-\| POST | `/api/retirement/recalculate` | Payload: `initial_amount`, `annual_contribution`, `interest_rate` |
-
----
-
-## Running Tests
-
-```bash
-php artisan test          # API & importer
-npm run test              # if you add front-end coverage
-```
-
-CI fails on:
-
-* missing database migrations
-* any un-documented response changes (strict JSON snapshots)
-
----
-
-## Roadmap
-
-* **CSV export** for accountants who refuse JSON.
-* Envelope budgeting, zero-based planning.
-* Webhooks: push a Net-Worth-Updated event to n8n / Zapier.
-* OAuth for multi-device clients (if Sanctum ever feels limiting).
-
-Feedback and PRs are welcome. Just bring good test coverage.
-
----
+If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
 
 ## License
 
-MIT. No warranty. Back up your data—seriously.
-
-```
-
-Feel free to adjust project name, author, or roadmap items to match your actual repository.
-```
+The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
