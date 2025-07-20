@@ -1,5 +1,5 @@
 {
-  "name": "Personal Finances Laravel + Filament",
+  "name": "Personal Finances Laravel + Filament with Claude Code",
   "dockerComposeFile": "docker-compose.yml",
   "service": "app",
   "workspaceFolder": "/workspace",
@@ -26,7 +26,8 @@
         "vscodevim.vim",
         "github.copilot",
         "ms-ossdata.vscode-pgsql",
-        "ms-azuretools.vscode-containers"
+        "ms-azuretools.vscode-containers",
+        "anthropic.claude-code"
       ],
       "settings": {
         "php.suggest.basic": false,
@@ -45,7 +46,14 @@
             "user": "postgres",
             "password": "password"
           }
-        ]
+        ],
+        "terminal.integrated.defaultProfile.linux": "bash",
+        "terminal.integrated.profiles.linux": {
+          "bash": {
+            "path": "/bin/bash",
+            "args": ["--login"]
+          }
+        }
       }
     }
   },

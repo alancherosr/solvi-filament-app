@@ -23,7 +23,9 @@ RUN apt-get update && apt-get install -y \
     postgresql-client \
     libpq-dev \
     supervisor \
-    sudo
+    sudo \
+    wget \
+    ca-certificates
 
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
@@ -42,6 +44,12 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 RUN groupadd --gid 1000 vscode \
     && useradd --uid 1000 --gid vscode --shell /bin/bash --create-home vscode \
     && usermod -aG www-data vscode
+
+# Install Claude Code globally
+RUN npm install -g @anthropic-ai/claude-code
+
+# Switch back to root for remaining setup
+USER root
 
 # Set working directory
 WORKDIR /workspace
