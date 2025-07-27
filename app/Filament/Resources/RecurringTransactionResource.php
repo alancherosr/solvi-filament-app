@@ -27,6 +27,10 @@ class RecurringTransactionResource extends Resource
 
     protected static ?string $navigationGroup = 'Transacciones';
 
+    protected static ?string $modelLabel = 'Transacción Recurrente';
+
+    protected static ?string $pluralModelLabel = 'Transacciones Recurrentes';
+
     protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
@@ -150,16 +154,14 @@ class RecurringTransactionResource extends Resource
                     ->boolean()
                     ->trueIcon('heroicon-o-check-circle')
                     ->falseIcon('heroicon-o-x-circle')
-                    ->trueColor('success')
-                    ->falseColor('danger'),
+                    ->color(fn ($state) => $state ? 'success' : 'danger'),
 
                 IconColumn::make('auto_process')
                     ->label('Auto')
                     ->boolean()
                     ->trueIcon('heroicon-o-cog-6-tooth')
                     ->falseIcon('heroicon-o-pause')
-                    ->trueColor('info')
-                    ->falseColor('gray'),
+                    ->color(fn ($state) => $state ? 'info' : 'gray'),
 
                 TextColumn::make('last_processed_at')
                     ->label('Último Procesamiento')
@@ -225,6 +227,10 @@ class RecurringTransactionResource extends Resource
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
+            ])
+            ->headerActions([
+                Tables\Actions\ImportAction::make()
+                    ->importer(\App\Filament\Imports\RecurringTransactionImporter::class),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

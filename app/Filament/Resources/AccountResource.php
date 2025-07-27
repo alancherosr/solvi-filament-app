@@ -27,6 +27,10 @@ class AccountResource extends Resource
 
     protected static ?string $navigationGroup = 'Gestión Financiera';
 
+    protected static ?string $modelLabel = 'Cuenta';
+
+    protected static ?string $pluralModelLabel = 'Cuentas';
+
     protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
@@ -48,6 +52,7 @@ class AccountResource extends Resource
                         'credit_card' => 'Tarjeta de Crédito',
                         'cash' => 'Efectivo',
                         'investment' => 'Inversión',
+                        'loan' => 'Préstamo',
                     ])
                     ->native(false),
 
@@ -106,6 +111,7 @@ class AccountResource extends Resource
                         'warning' => 'credit_card',
                         'secondary' => 'cash',
                         'info' => 'investment',
+                        'danger' => 'loan',
                     ])
                     ->formatStateUsing(fn (string $state): string => match ($state) {
                         'checking' => 'Corriente',
@@ -113,6 +119,7 @@ class AccountResource extends Resource
                         'credit_card' => 'Tarjeta',
                         'cash' => 'Efectivo',
                         'investment' => 'Inversión',
+                        'loan' => 'Préstamo',
                         default => $state,
                     }),
 
@@ -138,8 +145,7 @@ class AccountResource extends Resource
                     ->boolean()
                     ->trueIcon('heroicon-o-check-circle')
                     ->falseIcon('heroicon-o-x-circle')
-                    ->trueColor('success')
-                    ->falseColor('danger'),
+                    ->color(fn ($state) => $state ? 'success' : 'danger'),
 
                 TextColumn::make('created_at')
                     ->label('Creada')
@@ -157,6 +163,7 @@ class AccountResource extends Resource
                         'credit_card' => 'Tarjeta de Crédito',
                         'cash' => 'Efectivo',
                         'investment' => 'Inversión',
+                        'loan' => 'Préstamo',
                     ]),
 
                 SelectFilter::make('currency')
@@ -180,6 +187,10 @@ class AccountResource extends Resource
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
+            ])
+            ->headerActions([
+                Tables\Actions\ImportAction::make()
+                    ->importer(\App\Filament\Imports\AccountImporter::class),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

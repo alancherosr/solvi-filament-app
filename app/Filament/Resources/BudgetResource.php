@@ -13,7 +13,6 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\IconColumn;
-use Filament\Tables\Columns\ProgressColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
@@ -27,6 +26,10 @@ class BudgetResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-chart-pie';
 
     protected static ?string $navigationGroup = 'Presupuestos';
+
+    protected static ?string $modelLabel = 'Presupuesto';
+
+    protected static ?string $pluralModelLabel = 'Presupuestos';
 
     protected static ?int $navigationSort = 1;
 
@@ -123,8 +126,9 @@ class BudgetResource extends Resource
                     ->label('Gastado')
                     ->color(fn (Budget $record): string => $record->is_over_budget ? 'danger' : 'success'),
 
-                ProgressColumn::make('percentage_used')
+                TextColumn::make('percentage_used')
                     ->label('Progreso')
+                    ->formatStateUsing(fn ($state): string => number_format($state, 1).'%')
                     ->color(fn (Budget $record): string => match ($record->status) {
                         'over_budget' => 'danger',
                         'warning' => 'warning',
@@ -161,8 +165,7 @@ class BudgetResource extends Resource
                     ->boolean()
                     ->trueIcon('heroicon-o-check-circle')
                     ->falseIcon('heroicon-o-x-circle')
-                    ->trueColor('success')
-                    ->falseColor('danger'),
+                    ->color(fn ($state) => $state ? 'success' : 'danger'),
             ])
             ->defaultSort('start_date', 'desc')
             ->filters([
@@ -201,6 +204,10 @@ class BudgetResource extends Resource
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
+            ])
+            ->headerActions([
+                Tables\Actions\ImportAction::make()
+                    ->importer(\App\Filament\Imports\BudgetImporter::class),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

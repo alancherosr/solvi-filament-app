@@ -27,6 +27,10 @@ class TransactionRuleResource extends Resource
 
     protected static ?string $navigationGroup = 'Automatización';
 
+    protected static ?string $modelLabel = 'Regla de Transacción';
+
+    protected static ?string $pluralModelLabel = 'Reglas de Transacción';
+
     protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
@@ -143,9 +147,10 @@ class TransactionRuleResource extends Resource
 
                 BadgeColumn::make('is_effective')
                     ->label('Efectiva')
-                    ->boolean()
-                    ->trueColor('success')
-                    ->falseColor('gray')
+                    ->colors([
+                        'success' => true,
+                        'gray' => false,
+                    ])
                     ->formatStateUsing(fn (bool $state): string => $state ? 'Sí' : 'No'),
 
                 IconColumn::make('is_active')
@@ -153,8 +158,7 @@ class TransactionRuleResource extends Resource
                     ->boolean()
                     ->trueIcon('heroicon-o-check-circle')
                     ->falseIcon('heroicon-o-x-circle')
-                    ->trueColor('success')
-                    ->falseColor('danger'),
+                    ->color(fn ($state) => $state ? 'success' : 'danger'),
 
                 TextColumn::make('created_at')
                     ->label('Creada')
@@ -207,6 +211,10 @@ class TransactionRuleResource extends Resource
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
+            ])
+            ->headerActions([
+                Tables\Actions\ImportAction::make()
+                    ->importer(\App\Filament\Imports\TransactionRuleImporter::class),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

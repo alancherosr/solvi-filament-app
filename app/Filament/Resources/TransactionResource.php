@@ -15,7 +15,6 @@ use Filament\Tables;
 use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Filters\DateFilter;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
@@ -28,6 +27,10 @@ class TransactionResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-banknotes';
 
     protected static ?string $navigationGroup = 'Transacciones';
+
+    protected static ?string $modelLabel = 'Transacción';
+
+    protected static ?string $pluralModelLabel = 'Transacciones';
 
     protected static ?int $navigationSort = 1;
 
@@ -171,7 +174,7 @@ class TransactionResource extends Resource
                 TextColumn::make('transferToAccount.name')
                     ->label('Cuenta Destino')
                     ->placeholder('N/A')
-                    ->visible(fn ($livewire) => $livewire->tableFilters['type']['value'] === 'transfer'),
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('reference_number')
                     ->label('Referencia')
@@ -183,8 +186,7 @@ class TransactionResource extends Resource
                     ->boolean()
                     ->trueIcon('heroicon-o-check-circle')
                     ->falseIcon('heroicon-o-x-circle')
-                    ->trueColor('success')
-                    ->falseColor('warning'),
+                    ->color(fn ($state) => $state ? 'success' : 'warning'),
 
                 TextColumn::make('created_at')
                     ->label('Registrada')
@@ -214,7 +216,24 @@ class TransactionResource extends Resource
                     ->searchable()
                     ->preload(),
 
-                DateFilter::make('transaction_date')
+                Filter::make('transaction_date')
+                    ->form([
+                        DatePicker::make('from')
+                            ->label('Desde'),
+                        DatePicker::make('until')
+                            ->label('Hasta'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['from'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('transaction_date', '>=', $date),
+                            )
+                            ->when(
+                                $data['until'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('transaction_date', '<=', $date),
+                            );
+                    })
                     ->label('Fecha de Transacción'),
 
                 Filter::make('is_reconciled')
@@ -237,6 +256,10 @@ class TransactionResource extends Resource
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
+            ])
+            ->headerActions([
+                Tables\Actions\ImportAction::make()
+                    ->importer(\App\Filament\Imports\TransactionImporter::class),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
