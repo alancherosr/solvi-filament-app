@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('accounts', function (Blueprint $table) {
             $table->id();
             $table->string('name')->nullable(false);
-            $table->enum('type', ['checking', 'savings', 'credit_card', 'cash', 'investment'])->nullable(false);
+            $table->enum('type', ['checking', 'savings', 'credit_card', 'cash', 'investment', 'loan'])->nullable(false);
             $table->decimal('balance', 15, 2)->default(0.00)->nullable(false);
             $table->string('currency', 3)->default('COP')->nullable(false);
             $table->boolean('is_active')->default(true)->nullable(false);

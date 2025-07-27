@@ -24,6 +24,7 @@ return new class extends Migration
             $table->boolean('is_reconciled')->default(false)->nullable(false);
             $table->foreignId('transfer_to_account_id')->nullable()->constrained('accounts')->onDelete('set null');
             $table->timestampsTz();
+            $table->softDeletesTz();
 
             // Indexes
             $table->index('account_id', 'idx_transactions_account_id');
