@@ -3,11 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class TransactionRule extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'name',
         'conditions',
@@ -61,7 +64,7 @@ class TransactionRule extends Model
                         default => $operator
                     };
 
-                    $text[] = "{$fieldName} {$operatorName} '{$value}'";
+                    $text[] = "{$fieldName} {$operatorName} \"{$value}\"";
                 }
 
                 return implode(' Y ', $text);
@@ -111,6 +114,12 @@ class TransactionRule extends Model
         }
 
         return true;
+    }
+
+    // Alias for testing compatibility
+    public function matchesTransaction(Transaction $transaction): bool
+    {
+        return $this->matches($transaction);
     }
 
     protected function matchesCondition(Transaction $transaction, array $condition): bool
@@ -229,6 +238,7 @@ class TransactionRule extends Model
         return [
             'matches' => $matches,
             'non_matches' => $nonMatches,
+            'total_tested' => count($transactions),
             'match_rate' => count($matches) / max(1, count($transactions)) * 100,
         ];
     }

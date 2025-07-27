@@ -4,11 +4,14 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Budget extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'category_id',
         'amount',
@@ -43,6 +46,20 @@ class Budget extends Model
                     ->whereBetween('transaction_date', [$this->start_date, $this->end_date])
                     ->sum('amount');
             }
+        );
+    }
+
+    protected function formattedAmount(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => '$ '.number_format($this->amount, 2),
+        );
+    }
+
+    protected function formattedSpentAmount(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => '$ '.number_format($this->spent_amount, 2),
         );
     }
 
@@ -92,20 +109,6 @@ class Budget extends Model
                     return 'on_track';
                 }
             }
-        );
-    }
-
-    protected function formattedAmount(): Attribute
-    {
-        return Attribute::make(
-            get: fn () => number_format($this->amount, 2, ',', '.').' COP'
-        );
-    }
-
-    protected function formattedSpentAmount(): Attribute
-    {
-        return Attribute::make(
-            get: fn () => number_format($this->spent_amount, 2, ',', '.').' COP'
         );
     }
 

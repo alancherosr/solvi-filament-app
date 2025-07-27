@@ -3,11 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Account extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'name',
         'type',
@@ -54,14 +57,14 @@ class Account extends Model
     protected function formattedBalance(): Attribute
     {
         return Attribute::make(
-            get: fn () => number_format($this->balance, 2, ',', '.').' '.$this->currency,
+            get: fn () => '$ '.number_format($this->balance, 2).' '.$this->currency,
         );
     }
 
     protected function maskedAccountNumber(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->account_number ? '****'.substr($this->account_number, -4) : null,
+            get: fn () => $this->account_number ? '******'.substr($this->account_number, -4) : null,
         );
     }
 

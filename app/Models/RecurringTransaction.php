@@ -4,11 +4,14 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class RecurringTransaction extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'account_id',
         'category_id',
@@ -46,11 +49,7 @@ class RecurringTransaction extends Model
     protected function formattedAmount(): Attribute
     {
         return Attribute::make(
-            get: function () {
-                $currency = $this->account?->currency ?? 'COP';
-
-                return number_format(abs($this->amount), 2, ',', '.').' '.$currency;
-            }
+            get: fn () => '$ '.number_format(abs($this->amount), 2),
         );
     }
 
@@ -82,7 +81,7 @@ class RecurringTransaction extends Model
     protected function daysUntilDue(): Attribute
     {
         return Attribute::make(
-            get: fn () => now()->diffInDays($this->next_due_date, false)
+            get: fn () => (int) now()->startOfDay()->diffInDays($this->next_due_date, false)
         );
     }
 

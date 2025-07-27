@@ -6,6 +6,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Filament\Models\Contracts\HasName;
+use Laravel\Sanctum\HasApiTokens;
 
 /**
  * @property int $id
@@ -34,10 +36,10 @@ use Illuminate\Notifications\Notifiable;
  *
  * @mixin \Eloquent
  */
-class User extends Authenticatable
+class User extends Authenticatable implements HasName
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -71,5 +73,23 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Determine if the user can access the Filament admin panel.
+     */
+    public function canAccessPanel(\Filament\Panel $panel): bool
+    {
+        // For now, allow all authenticated users to access the panel
+        // In production, you might want to add role-based access control
+        return true;
+    }
+
+    /**
+     * Get the user's name for Filament.
+     */
+    public function getFilamentName(): string
+    {
+        return $this->name;
     }
 }
